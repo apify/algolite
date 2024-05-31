@@ -48,3 +48,16 @@ const result = await index.search('Algolia')
 ```
 docker run --rm -p 9200:9200 --name algolite marconi1992/algolite:0.1.1
 ```
+
+## Our local run
+
+If you want to run Algolite locally, you need to run:
+```
+docker build -t algolite-local-dev ./
+docker run -v .:/algolite -p 9200:9200 -it algolite-local-dev /bin/bash
+```
+
+Then, inside the container, run:
+```
+npm i && node cli.js
+```

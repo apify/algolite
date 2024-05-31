@@ -22,6 +22,7 @@ const buildSearchExpression = (rule, db) => {
     // https://www.algolia.com/doc/guides/managing-results/refine-results/filtering/in-depth/combining-boolean-operators/#negate-combined-filters
     throw new Error('NOT only supports MATCH')
   } else {
+    // Only supports MATCH, OR, AND, NOT
     throw new Error('UNKNOWN TOKEN')
   }
 }

@@ -633,10 +633,14 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
-    // NOT is not parsed correctly - it should have priority over AND and OR. Negation of a combined filter is not allowed in Algolia.
+    // Code below is a fix of NOT not parsed correctly - it should have priority over AND and OR
+    //  Parsing: NOT a:x AND NOT a:y AND NOT a:z            => !(a=x) && !(a=y) && !(a=z)
+    //   Before: NOT (a:x AND (NOT (a:y AND (NOT a:z))))    => !(a=x && !(a=y && !(a=z)))
+    //   After:  (NOT a:x) AND (NOT a:y) AND (NOT a:z)      => !(a=x) && !(a=y) && !(a=z)
+    //
+    // Also - Negation of a combined filter is not allowed in Algolia. So for example NOT (a:x OR a:y) is not allowed.
     // https://www.algolia.com/doc/guides/managing-results/refine-results/filtering/in-depth/combining-boolean-operators/#negate-combined-filters
-    // it is fixed here because it is not really that easy to change parser and this is safer...
-    if(s0.value && (s0.value.token === 'AND' || s0.value.token === 'OR')) {
+    if (s0.value && (s0.value.token === 'AND' || s0.value.token === 'OR')) {
       return {
         token: s0.value.token,
         left: { token: 'NOT', value: s0.value.left },
