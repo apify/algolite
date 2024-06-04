@@ -7,7 +7,6 @@ block
 Statement
   = StatementAND
   / StatementOR
-  / StatementNOT
   / Expression
 
 StatementAND
@@ -28,11 +27,14 @@ StatementOR
     }
   }
 
-StatementNOT
-  = "NOT" Space value:Statement {
+ExpressionNot
+  = "NOT" Space value:Value {
     return {
       token: 'NOT',
-      value: value
+      value: {
+        token: 'MATCH',
+        value: value
+      }
     }
   }
 
@@ -44,7 +46,7 @@ ExpressionMatch
       value: value
     }
   }
-  
+
 ExpressionEquals
   = key:Word Space* ("=") Space* value:Value {
     return {
@@ -92,6 +94,7 @@ ExpressionLte
 
 Expression
   = ExpressionMatch
+  / ExpressionNot
   / ExpressionEquals
   / ExpressionGt
   / ExpressionGte
@@ -138,7 +141,7 @@ Word "word"
 
 Special "special"
   = w:[^ ()"']+ { return w.join('') }
-  
+
 Letter
   = [.a-zA-Z0-9_]
 
