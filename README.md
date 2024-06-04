@@ -59,5 +59,5 @@ docker run -v .:/algolite -p 9200:9200 -it algolite-local-dev /bin/bash
 
 Then, inside the container, run:
 ```
-npm i && node cli.js
+npm run prestart:container && node cli.js
 ```

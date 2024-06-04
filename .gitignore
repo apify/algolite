@@ -1,3 +1,4 @@
 node_modules
 .algolite
 package-lock.json
+algoliaDSLParser.js
