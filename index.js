@@ -35,6 +35,13 @@ const createServer = (options) => {
     allowedHeaders: '*'
   }))
 
+  // Health check endpoint
+  app.get('/health', (_req, res) => {
+    return res.status(200).json({
+      status: 'ok'
+    })
+  })
+
   // See docs at https://www.algolia.com/doc/api-reference/api-methods/get-related-products/
   // This endpoint mimics the recommendation engine of Algolia.
   // It returns `maxRecommendations` objects from the index with top score (the queried item is ignored)
