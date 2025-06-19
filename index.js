@@ -52,42 +52,42 @@ const createServer = (options) => {
   // - obj.name (used as name)
   app.post('/1/indexes/*/recommendations', wrapAsyncMiddleware(async (req, res) => {
     const { body } = req
-    const { requests } = body;
+    const { requests } = body
 
-    const results = [];
+    const results = []
 
     if (requests && requests.length > 0) {
       for (const request of requests) {
-        const  { indexName, objectID, maxRecommendations } = request;
-        const db = await getIndex(indexName, path);
-        const content = await db.SEARCH('*');
+        const { indexName, objectID, maxRecommendations } = request
+        const db = await getIndex(indexName, path)
+        const content = await db.SEARCH('*')
         const objects = (content || [])
           .map(object => ({
             _id: object.obj._id,
             name: object.obj.name,
-            featuredScore: object.obj.featuredScore,
+            featuredScore: object.obj.featuredScore
           }))
-          .filter(object => object._id !== objectID);
-          objects.sort((a, b) => (a.featuredScore > b.featuredScore) ? -1 : 1) // descending order
+          .filter(object => object._id !== objectID)
+        objects.sort((a, b) => (a.featuredScore > b.featuredScore) ? -1 : 1) // descending order
 
-        const hits = [];
-        const numRecommendations = maxRecommendations > 0 ? Math.min(maxRecommendations, objects.length) : objects.length;
+        const hits = []
+        const numRecommendations = maxRecommendations > 0 ? Math.min(maxRecommendations, objects.length) : objects.length
         for (let i = 0; i < numRecommendations; i++) {
-          const object = objects[i];
+          const object = objects[i]
           hits.push({
             // These 3 fields must be present on the object in the database
             _score: object.featuredScore,
             objectID: object._id,
-            name: object.name,
-          });
+            name: object.name
+          })
         }
 
-        results.push({ hits });
+        results.push({ hits })
       }
     }
 
     return res.json({ results })
-  }));
+  }))
 
   app.post('/1/indexes/:indexName/query', wrapAsyncMiddleware(async (req, res) => {
     const { sortAttribute, sortDesc, indexName } = getIndexName(req)
